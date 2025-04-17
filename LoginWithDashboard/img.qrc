@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>img/pp.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>img/pp.bmp</file>
+        <file>LoginForm.qml</file>
+        <file>Dashboard.qml</file>
+        <file>Components/CustomBusyIndicator.qml</file>
+        <file>Components/Toast.qml</file>
+        <file>Components/StatCard.qml</file>
+    </qresource>
+</RCC>
