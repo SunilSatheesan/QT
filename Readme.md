@@ -30,8 +30,8 @@ This repository contains a collection of Qt QML sample projects that I created w
  | Concept | Learning Description | Example Usage / Notes
 | Project Name    	| Concept	| Learning						| Example					|
 | ----------------- | ---------	| ----------------------------- | -------------------------	|
-| Login with 		| 	    	|								|							|
-| Dashboard			| 	     	|								|							|
+| Login with Dashboard		| 	 setContextProperty or qmlRegisterType   	|								|							|
+| 			| 	     	|								|							|
 | 	    			| 	    	|								|							|
 
 
