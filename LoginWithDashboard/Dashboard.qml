@@ -10,13 +10,13 @@ Item {
     Component.onCompleted: {
         app.height = 500
         app.width = 800
-        contentLoader.source = "Homepage.qml"
+        contentArea.loadPage("Homepage.qml")
     }
 
     // Sidebar data
     ListModel {
         id: sidebarModel
-        ListElement { name: "Home" }
+        ListElement { name: "Home"; icon: "home.png" }
         ListElement { name: "Profile" }
         ListElement { name: "Settings" }
         ListElement { name: "Logout" }
@@ -38,40 +38,52 @@ Item {
                 delegate: Rectangle {
                     width: parent.width
                     height: 50
-                    color: ListView.isCurrentItem ? "#555" : "transparent"
-                    border.color: "white"
-                    border.width: 1
+                    property bool hovered: false
+                    color: hovered ? "#3d566e" :  (ListView.isCurrentItem ? "#34495e" : "transparent")
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: name
-                        color: "white"
-                        font.pixelSize: 16
+                    Row {
+                        spacing: 10
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 12
+
+                        Image {
+                            source: icon
+                            width: 20
+                            height: 20
+                            fillMode: Image.PreserveAspectFit
+                        }
+
+                        Text {
+                            text: name
+                            color: "white"
+                            font.pixelSize: 16
+                        }
                     }
 
                     MouseArea {
                         anchors.fill: parent
+                        hoverEnabled: true
+                        onEntered: hovered = true
+                        onExited: hovered = false
                         onClicked: {
                             sidebar.currentIndex = index
-                            console.log("Selected:", name)
                             switch (name) {
                             case "Home":
-                                contentLoader.source = "Homepage.qml"
-                                console.log("Loading:", contentLoader.source)
+                                contentArea.loadPage("Homepage.qml")
                                 break
                             case "Profile":
-                                contentLoader.source = "ProfilePage.qml"
+                                contentArea.loadPage("qrc:/demo/Components/ProfilePage.qml")
                                 break
                             case "Settings":
-                                contentLoader.source = "SettingsPage.qml"
+                                contentArea.loadPage("qrc:/demo/Components/SettingsPage.qml")
                                 break
                             case "Logout":
-                                app.width = 360
                                 app.height = 300
+                                app.width = 360
                                 stackView.pop()
                                 break
                             }
-                            // emit signal or update main view content
                         }
                     }
                 }
@@ -86,10 +98,40 @@ Item {
             radius: 4
             border.color: "#ccc"
 
-            Loader {
-                id: contentLoader
+            Item {
+                id: contentArea
                 anchors.fill: parent
+                property string currentPage: ""
+
+                Loader {
+                    id: contentLoader
+                    anchors.fill: parent
+                    asynchronous: true
+                    active: false // let us control timing
+                    onLoaded: {
+                        fadeIn.restart()
+                    }
+                }
+
+                SequentialAnimation {
+                    id: fadeIn
+                    PropertyAnimation {
+                        target: contentLoader.item
+                        property: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 300
+                    }
+                }
+
+                function loadPage(pageUrl) {
+                    contentLoader.active = false
+                    contentLoader.setSource("")
+                    contentLoader.source = pageUrl
+                    contentLoader.active = true
+                }
             }
+
         }
     }
 }

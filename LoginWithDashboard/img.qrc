@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/img">
         <file>img/pp.png</file>
+        <file>img/home.png</file>
     </qresource>
     <qresource prefix="/">
         <file>img/pp.bmp</file>
@@ -10,5 +11,6 @@
         <file>Components/Toast.qml</file>
         <file>Components/StatCard.qml</file>
         <file>Homepage.qml</file>
+        <file>img/home.png</file>
     </qresource>
 </RCC>
