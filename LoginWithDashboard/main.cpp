@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
 
     LoginHandler handler;
     engine.rootContext()->setContextProperty("loginHandler", &handler);
-    // MockBackend backendData;
-    // engine.rootContext()->setContextProperty("backendData", &backendData);
-    qmlRegisterType<MockBackend>("demo", 1, 0, "MockBackend");
+    MockBackend backendData;
+    engine.rootContext()->setContextProperty("backendData", &backendData);
+    // qmlRegisterType<MockBackend>("demo", 1, 0, "MockBackend");
 
     engine.loadFromModule("demo", "Main");
 

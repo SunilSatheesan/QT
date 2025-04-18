@@ -11,7 +11,7 @@ public:
 
     QVariantMap stats() const;
 
-    Q_INVOKABLE void fetchStats(); // Simulate server call
+    Q_INVOKABLE void fetchStats(double rand = 1); // Simulate server call
 
 signals:
     void statsChanged();

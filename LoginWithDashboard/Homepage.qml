@@ -6,28 +6,28 @@ Item {
     width: 800
     height: 500
 
-    // Component.onCompleted: {
-    //     backendData.fetchStats()
-    //     // onStatsChanged: {
-    //     //     usersCard.value = backendData.stats["users"]
-    //     //     revenueCard.value = backendData.stats["revenue"]
-    //     //     messagesCard.value = backendData.stats["messages"]
-    //     //     alertsCard.value = backendData.stats["alerts"]
-    //     // }
-    // }
-
-    MockBackend {
-        id: mockBackend
-        onStatsChanged: {
-            usersCard.value = stats["users"]
-            revenueCard.value = stats["revenue"]
-            messagesCard.value = stats["messages"]
-            alertsCard.value = stats["alerts"]
-        }
-        Component.onCompleted: {
-            fetchStats()
-        }
+    Component.onCompleted: {
+        backendData.fetchStats()
+        // onStatsChanged: {
+        //     usersCard.value = backendData.stats["users"]
+        //     revenueCard.value = backendData.stats["revenue"]
+        //     messagesCard.value = backendData.stats["messages"]
+        //     alertsCard.value = backendData.stats["alerts"]
+        // }
     }
+
+    // MockBackend {
+    //     id: mockBackend
+    //     onStatsChanged: {
+    //         usersCard.value = stats["users"]
+    //         revenueCard.value = stats["revenue"]
+    //         messagesCard.value = stats["messages"]
+    //         alertsCard.value = stats["alerts"]
+    //     }
+    //     Component.onCompleted: {
+    //         fetchStats()
+    //     }
+    // }
 
     Flow {
         anchors.fill: parent
@@ -40,13 +40,13 @@ Item {
         StatCard { id: alertsCard; title: "Alerts"; value: "-" }
     }
 
-    // Connections {
-    //     target: backendData
-    //     function onStatsChanged() {
-    //         usersCard.value = backendData.stats["users"]
-    //         revenueCard.value = backendData.stats["revenue"]
-    //         messagesCard.value = backendData.stats["messages"]
-    //         alertsCard.value = backendData.stats["alerts"]
-    //     }
-    // }
+    Connections {
+        target: backendData
+        function onStatsChanged() {
+            usersCard.value = backendData.stats["users"]
+            revenueCard.value = backendData.stats["revenue"]
+            messagesCard.value = backendData.stats["messages"]
+            alertsCard.value = backendData.stats["alerts"]
+        }
+    }
 }
