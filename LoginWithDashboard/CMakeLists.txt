@@ -28,6 +28,7 @@ qt_add_qml_module(appdemo
         QML_FILES Components/CustomBusyIndicator.qml
         QML_FILES Components/Toast.qml
         QML_FILES Components/StatCard.qml
+        QML_FILES Homepage.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

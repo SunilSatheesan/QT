@@ -9,5 +9,6 @@
         <file>Components/CustomBusyIndicator.qml</file>
         <file>Components/Toast.qml</file>
         <file>Components/StatCard.qml</file>
+        <file>Homepage.qml</file>
     </qresource>
 </RCC>

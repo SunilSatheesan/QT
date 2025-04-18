@@ -1,157 +1,95 @@
-// Dashboard.qml
 import QtQuick 2.15
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import demo 1.0
 
 Item {
-    id: dashboard
-    anchors.fill: parent
-    property string username: ""
+    width: 800
+    height: 500
 
-    Rectangle {
-        id: topBar
-        height: 50
-        width: parent.width
-        color: "#1976d2"
-        anchors.top: parent.top
+    Component.onCompleted: {
+        app.height = 500
+        app.width = 800
+        contentLoader.source = "Homepage.qml"
+    }
 
-        RowLayout {
-            anchors.fill: parent
-            spacing: 10
-            // padding: 10
+    // Sidebar data
+    ListModel {
+        id: sidebarModel
+        ListElement { name: "Home" }
+        ListElement { name: "Profile" }
+        ListElement { name: "Settings" }
+        ListElement { name: "Logout" }
+    }
 
-            Label {
-                text: "Dashboard"
-                font.pixelSize: 20
-                color: "white"
-                Layout.alignment: Qt.AlignVCenter
-            }
+    RowLayout {
+        anchors.fill: parent
 
-            Item { Layout.fillWidth: true }
+        // Sidebar
+        Rectangle {
+            width: 180
+            color: "#333"
+            Layout.fillHeight: true
 
-            Button {
-                text: "Logout"
-                onClicked: {
-                    stackView.pop() // Go back to login
+            ListView {
+                id: sidebar
+                anchors.fill: parent
+                model: sidebarModel
+                delegate: Rectangle {
+                    width: parent.width
+                    height: 50
+                    color: ListView.isCurrentItem ? "#555" : "transparent"
+                    border.color: "white"
+                    border.width: 1
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: name
+                        color: "white"
+                        font.pixelSize: 16
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            sidebar.currentIndex = index
+                            console.log("Selected:", name)
+                            switch (name) {
+                            case "Home":
+                                contentLoader.source = "Homepage.qml"
+                                console.log("Loading:", contentLoader.source)
+                                break
+                            case "Profile":
+                                contentLoader.source = "ProfilePage.qml"
+                                break
+                            case "Settings":
+                                contentLoader.source = "SettingsPage.qml"
+                                break
+                            case "Logout":
+                                app.width = 360
+                                app.height = 300
+                                stackView.pop()
+                                break
+                            }
+                            // emit signal or update main view content
+                        }
+                    }
                 }
             }
         }
-    }
 
-    // Content Area
-    GridLayout {
-        id: grid
-        columns: 2
-        rowSpacing: 20
-        columnSpacing: 20
-        anchors {
-            top: topBar.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-            margins: 20
-        }
-
+        // Main content area
         Rectangle {
+            color: "white"
             Layout.fillWidth: true
-            Layout.preferredHeight: 100
-            color: "#e0f7fa"
-            radius: 8
-            border.color: "#00acc1"
-            Text {
-                anchors.centerIn: parent
-                text: "Users: 120"
-            }
-        }
+            Layout.fillHeight: true
+            radius: 4
+            border.color: "#ccc"
 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 100
-            color: "#fce4ec"
-            radius: 8
-            border.color: "#ec407a"
-            Text {
-                anchors.centerIn: parent
-                text: "Tasks: 43"
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 100
-            color: "#f3e5f5"
-            radius: 8
-            border.color: "#ab47bc"
-            Text {
-                anchors.centerIn: parent
-                text: "Messages: 8"
-            }
-        }
-
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 100
-            color: "#e8f5e9"
-            radius: 8
-            border.color: "#66bb6a"
-            Text {
-                anchors.centerIn: parent
-                text: "Alerts: 2"
+            Loader {
+                id: contentLoader
+                anchors.fill: parent
             }
         }
     }
-
-    // Rectangle {
-    //     anchors.top: topBar.bottom
-    //     anchors.bottom: parent.bottom
-    //     color: "#f4f6f8"
-
-    //     ColumnLayout {
-    //         anchors.fill: parent
-    //         anchors.margins: 20
-    //         spacing: 20
-
-    //         // Text {
-    //         //     text: "Welcome, " + dashboard.username
-    //         //     font.pixelSize: 24
-    //         //     Layout.alignment: Qt.AlignHCenter
-    //         // }
-
-    //         RowLayout {
-    //             Layout.fillWidth: true
-    //             spacing: 20
-
-    //             StatCard {
-    //                 label: "Logins"
-    //                 value: "5"
-    //             }
-    //             StatCard {
-    //                 label: "Messages"
-    //                 value: "23"
-    //             }
-    //             StatCard {
-    //                 label: "Notifications"
-    //                 value: "3"
-    //             }
-    //         }
-
-    //         ListView {
-    //             Layout.fillWidth: true
-    //             Layout.fillHeight: true
-    //             model: ["Item A", "Item B", "Item C"]
-    //             delegate: Text {
-    //                 text: modelData
-    //                 font.pixelSize: 16
-    //                 padding: 8
-    //             }
-    //         }
-    //     }
-// }
-
-// Component.onCompleted: console.log("Dashboard loaded for user:", username)
-Component.onCompleted: {
-    console.log("Dashboard loaded for user:", username)
-    app.width = 800
-    app.height = 600
-}
 }
