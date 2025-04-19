@@ -7,6 +7,8 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("Demo");
+    QCoreApplication::setApplicationName("appDemo");
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
@@ -16,7 +18,6 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-
     LoginHandler handler;
     engine.rootContext()->setContextProperty("loginHandler", &handler);
     // MockBackend backendData;

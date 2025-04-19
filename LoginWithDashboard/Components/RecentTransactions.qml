@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import demo 1.0
 import QtQuick.Effects
 import QtQuick.LocalStorage
+import Qt.labs.settings
 
 Item {
     width: 400
@@ -117,22 +118,29 @@ Item {
                     // z: 100
                     model: ["All", "Credit", "Debit"]
                     property bool filterInitialized: false
+                    currentIndex: settingsStorage.filterIndex
                     onCurrentIndexChanged: {
                         switch (currentIndex) {
                         case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
                         case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
                         case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
                         }
+                        settingsStorage.filterIndex = currentIndex
                         console.log(currentIndex)
-                        if (filterInitialized)
-                            setSetting("filter", filterBox.currentIndex)
+                        // if (filterInitialized)
+                        //     setSetting("filter", filterBox.currentIndex)
                     }
                     Component.onCompleted: {
-                        initSettings()
-                        const saved = getSetting("filter", 0)
-                        console.log(saved)
-                        filterBox.currentIndex = saved
-                        filterInitialized = true
+                        // initSettings()
+                        // const saved = getSetting("filter", 0)
+                        // console.log(saved)
+                        // filterBox.currentIndex = saved
+                        // filterInitialized = true
+                    }
+
+                    Settings {
+                        id: settingsStorage
+                        property int filterIndex: 0
                     }
                 }
             }
