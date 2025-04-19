@@ -7,6 +7,17 @@ Item {
     width: 400
     height: 400
 
+    // Loader {
+    //     id: contentLoader
+    //     anchors.fill: parent
+    //     sourceComponent: loadTimer.running ? loadingIndicator : listViewComponent
+    // }
+
+    // Component {
+    //     id: loadingIndicator
+
+    // }
+
     ListModel {
         id: transactionModel
         ListElement { title: "Payment Received"; amount: 1500; time: "10:32 AM"; type: "credit" }
@@ -17,20 +28,38 @@ Item {
     TransactionModel {
         id: transactionModelCPP
         Component.onCompleted: {
-            transactionModelCPP.addTransaction("credit", "Payment Received", 1500, "10:32 AM")
-            transactionModelCPP.addTransaction("debit", "Subscription Deducted", -600, "9:20 AM")
-            transactionModelCPP.addTransaction("debit", "Payment Deducted", -1500, "00:20 AM")
-            transactionModelCPP.addTransaction("credit", "Payment Received", 2000, "Yesterday")
+            transactionModelCPP.addTransaction(5, "credit", "Payment Received", 1500, "10:32 AM")
+            transactionModelCPP.addTransaction(6, "debit", "Subscription Deducted", -600, "9:20 AM")
+            transactionModelCPP.addTransaction(7, "debit", "Payment Deducted", -1500, "00:20 AM")
+            transactionModelCPP.addTransaction(8, "credit", "Payment Received", 2000, "Yesterday")
+            // Delay DB loading by 1.5 seconds
+            loadTimer.start()
+        }
+    }
+    Timer {
+        id: loadTimer
+        interval: 5000 // 1.5 seconds
+        repeat: false
+        onTriggered: {
+            transactionModelCPP.loadTransactionsFromDb()
         }
     }
 
     ColumnLayout {
+        id: listViewComponent
         width: parent.width
         height: parent.height
         // width: 400
         // height: 300
 
         RowLayout {
+            Text {
+                // z: 100
+                visible: loadTimer.running
+                // anchors.centerIn: parent
+                text: "Loading..."
+                font.pixelSize: 20
+            }
             Item {
                 Layout.fillWidth: true
             }
@@ -43,9 +72,9 @@ Item {
                 model: ["All", "Credit", "Debit"]
                 onCurrentIndexChanged: {
                     switch (currentIndex) {
-                        case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
-                        case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
-                        case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
+                    case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
+                    case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
+                    case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
                     }
                 }
             }
