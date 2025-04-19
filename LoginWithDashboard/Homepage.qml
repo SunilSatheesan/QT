@@ -67,7 +67,9 @@ Item {
         // }
     }
 
-
+    Component.onCompleted: {
+        stateChanged("loading")
+    }
 
     // Connections {
     //     target: backendData

@@ -1,22 +1,63 @@
 import QtQuick 2.15
+import QtQml.StateMachine 1.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import demo 1.0
+import QtQuick.Effects
 
 Item {
     width: 400
-    height: 400
+    height: 200
 
-    // Loader {
-    //     id: contentLoader
-    //     anchors.fill: parent
-    //     sourceComponent: loadTimer.running ? loadingIndicator : listViewComponent
-    // }
+    StateMachine {
+        id: machine
+        property string state: "loading"
+        initialState: loadingState
 
-    // Component {
-    //     id: loadingIndicator
+        State { id: loadingState }
+        State { id: loadedState }
+        State { id: errorState }
+        State { id: emptyState }
 
-    // }
+        running: true
+    }
+
+    Loader {
+        anchors.fill: parent
+        sourceComponent: {
+            switch (machine.state) {
+            case "loading": return loadingIndicator
+            case "error": return errorView
+            case "empty": return emptyView
+            case "loaded": return transactionListView
+            }
+        }
+    }
+
+    Component {
+        id: loadingIndicator
+        Rectangle {
+            anchors.fill: parent
+            Text { anchors.centerIn: parent; text: "Loading..." }
+            // color: "red"
+        }
+    }
+
+    Component {
+        id: errorView
+        Rectangle {
+            anchors.fill: parent
+            Text { anchors.centerIn: parent; text: "Failed to load." }
+        }
+    }
+
+    Component {
+        id: emptyView
+        Rectangle {
+            anchors.fill: parent
+            Text { anchors.centerIn: parent; text: "No transactions yet." }
+        }
+    }
 
     ListModel {
         id: transactionModel
@@ -47,140 +88,191 @@ Item {
         }
     }
 
-    ColumnLayout {
-        id: listViewComponent
-        width: parent.width
-        height: parent.height
-        // width: 400
-        // height: 300
+    Component {
+        id: transactionListView
+        ColumnLayout {
+            id: listViewComponent
+            width: parent.width
+            height: parent.height
+            // width: 400
+            // height: 300
 
-        RowLayout {
-            Text {
-                // z: 100
-                visible: loadTimer.running
-                // anchors.centerIn: parent
-                text: "Loading..."
-                font.pixelSize: 20
-            }
-            Item {
-                Layout.fillWidth: true
-            }
-
-            ComboBox {
-                id: filterBox
-                width: 150
-                leftPadding: 20
-                // z: 100
-                model: ["All", "Credit", "Debit"]
-                onCurrentIndexChanged: {
-                    switch (currentIndex) {
-                    case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
-                    case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
-                    case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
-                    }
-                }
-            }
-        }
-
-        ListView {
-            Layout.fillHeight: true
-            // anchors.fill: parent
-            Layout.fillWidth: true
-            // Layout.preferredHeight: 210  // or any fixed height
-            // clip: true
-            model: transactionModelCPP
-            delegate: SwipeDelegate {
-                id: swipeDelegate
-                width: parent.width
-                height: 50
-                contentItem: Row {
-                    spacing: 10
-                    // padding: 20
-                    leftPadding: 20
-                    // anchors.verticalCenter: parent.verticalCenter
-
-                    Rectangle {
-                        width: 8
-                        height: 40
-                        radius: 4
-                        color: type === "credit" ? "green" : "red"
-                        anchors.top: parent.top
-                    }
-
-                    Column {
-                        width: 200
-                        spacing: 2
-                        Text {
-                            text: description
-                            font.bold: true
-                            color: "#333"
-                        }
-                        Text {
-                            text: time
-                            font.pixelSize: 12
-                            color: "#777"
-                        }
-                    }
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: (amount >= 0 ? "+" : "") + amount + " ₹"
-                        color: amount >= 0 ? "green" : "red"
-                        font.bold: true
-                    }
-                }
-
-                swipe.right: Item {
-                    width: 100
-                    height: 50
+            RowLayout {
+                Text {
                     // z: 100
-                    anchors.right: parent.right
+                    visible: loadTimer.running
+                    // anchors.centerIn: parent
+                    text: "Loading..."
+                    font.pixelSize: 20
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
 
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "red"
-                        radius: 4
+                ComboBox {
+                    id: filterBox
+                    width: 150
+                    leftPadding: 20
+                    // z: 100
+                    model: ["All", "Credit", "Debit"]
+                    onCurrentIndexChanged: {
+                        switch (currentIndex) {
+                        case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
+                        case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
+                        case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
+                        }
+                    }
+                }
+            }
 
-                        Text {
-                            anchors.centerIn: parent
-                            color: "white"
-                            text: "Delete"
+            ScrollView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                ListView {
+                    // Layout.fillHeight: true
+                    // // anchors.fill: parent
+                    // Layout.fillWidth: true
+                    // Layout.preferredHeight: 210  // or any fixed height
+                    clip: true
+                    width: parent.width
+                    height: contentHeight
+                    // anchors.top: parent.top
+                    // anchors.left: parent.left
+                    // anchors.right: parent.right
+                    // height: parent.height
+                    model: transactionModelCPP
+                    delegate: SwipeDelegate {
+                        id: swipeDelegate
+                        width: parent.width
+                        height: 60
+
+                        background: Item {
+                            width: parent.width
+                            height: parent.height
+
+                            Rectangle {
+                                id: cardContent
+                                width: parent.width
+                                height: parent.height
+                                color: swipeDelegate.hovered ? "#f8f8f8" : "white"
+                                radius: 8
+
+                                Row {
+                                    spacing: 10
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 20
+
+                                    Rectangle {
+                                        width: 8
+                                        height: 40
+                                        radius: 4
+                                        color: type === "credit" ? "green" : "red"
+                                    }
+
+                                    Column {
+                                        width: 200
+                                        spacing: 2
+                                        Text {
+                                            text: description
+                                            font.bold: true
+                                            color: "#333"
+                                        }
+                                        Text {
+                                            text: time
+                                            font.pixelSize: 12
+                                            color: "#777"
+                                        }
+                                    }
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: (amount >= 0 ? "+" : "") + amount + " ₹"
+                                        color: amount >= 0 ? "green" : "red"
+                                        font.bold: true
+                                    }
+                                }
+
+                                // MouseArea {
+                                //     anchors.fill: parent
+                                //     hoverEnabled: true
+                                //     onEntered: swipeDelegate.hovered = true
+                                //     onExited: swipeDelegate.hovered = false
+                                // }
+                            }
+                            MultiEffect {
+                                anchors.fill: cardContent
+                                source: cardContent
+                                shadowEnabled: true
+                                shadowColor: "#33000000"
+                                shadowBlur: 0.6
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 2
+                            }
                         }
 
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                console.log("Delete clicked on row: " + index)
-                                // transactionModelCPP.removeTransaction(index)
-                                // swipe.close()
-                                deleteAnim.start()
+                        swipe.right: Item {
+                            width: 100
+                            height: 50
+                            anchors.right: parent.right
+
+                            Rectangle {
+                                anchors.fill: parent
+                                color: "red"
+                                radius: 8
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    color: "white"
+                                    text: "Delete"
+                                }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        deleteAnim.start()
+                                    }
+                                }
+                            }
+                        }
+
+                        SequentialAnimation {
+                            id: deleteAnim
+                            PropertyAnimation { target: swipeDelegate; property: "opacity"; to: 0; duration: 200 }
+                            PropertyAnimation { target: swipeDelegate; property: "height"; to: 0; duration: 200 }
+                            ScriptAction {
+                                script: {
+                                    transactionModelCPP.removeTransaction(index)
+                                    swipeDelegate.opacity = 1
+                                    swipeDelegate.height = contentItem.implicitHeight
+                                }
                             }
                         }
                     }
-                }
+                    // delegate: Rectangle {
+                    //     width: parent.width
+                    //     height: 60
+                    //     color: "transparent"
 
-                // Animation before removing
-                SequentialAnimation {
-                    id: deleteAnim
-                    PropertyAnimation { target: swipeDelegate; property: "opacity"; to: 0; duration: 200 }
-                    PropertyAnimation { target: swipeDelegate; property: "height"; to: 0; duration: 200 }
-                    ScriptAction {
-                        script: {
-                            transactionModelCPP.removeTransaction(index)
-                            swipeDelegate.opacity = 1
-                            swipeDelegate.height = contentItem.implicitHeight
-                        }
-                    }
+
+                    // }
                 }
             }
-            // delegate: Rectangle {
-            //     width: parent.width
-            //     height: 60
-            //     color: "transparent"
+        }
+    }
 
-
-            // }
+    Connections {
+        target: transactionModelCPP
+        function onStateChanged(newState) {
+            console.log(newState)
+            machine.state = newState
         }
 
+        function onTransactionRemoved() {
+            console.log("removed...")
+            if (transactionModelCPP.transactionCount() == 0) {
+                machine.state = "empty"
+            }
+        }
     }
 }

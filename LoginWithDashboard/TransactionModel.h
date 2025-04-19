@@ -14,7 +14,9 @@
 
 class TransactionModel : public QAbstractListModel {
     Q_OBJECT
-
+signals:
+    void stateChanged(QString newState);
+    void transactionRemoved();
 public:
     enum Roles {
         IdRole = Qt::UserRole + 1,
@@ -32,6 +34,7 @@ public:
     Q_ENUM(TransactionTypeFilter)
 
     explicit TransactionModel(QObject *parent = nullptr) : QAbstractListModel(parent) {
+        emit stateChanged("loading");
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
         db.setDatabaseName("transactions.db");
         if (!db.open()) {
@@ -138,6 +141,8 @@ public:
         m_transactions.removeAt(index);
         delete txn;
         endRemoveRows();
+
+        emit transactionRemoved();
     }
 
     Q_INVOKABLE void setFilter(TransactionTypeFilter filter)
@@ -191,28 +196,33 @@ public:
     }
 
     Q_INVOKABLE void loadFromRealApi() {
-        try {
-            QUrl url("http://10.130.162.175:81/transactions.json");
-            QNetworkRequest request(url);
-            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-            QNetworkReply *reply = m_networkManager.get(request);
-            connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-                onApiReply(reply);
-            });
-        }
-        catch(...){
-            qDebug() << "fail";
-        }
+        QUrl url("http://10.130.162.175:81/transactions.json");
+        QNetworkRequest request(url);
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        QNetworkReply *reply = m_networkManager.get(request);
+        connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+            onApiReply(reply);
+        });
+    }
+
+    Q_INVOKABLE int transactionCount() {
+        return m_transactions.size();
     }
 
     void onApiReply(QNetworkReply *reply) {
         if (reply->error() != QNetworkReply::NoError) {
             qWarning() << "API error:" << reply->errorString();
+            emit stateChanged("error");
             reply->deleteLater();
             return;
         }
 
         const QByteArray data = reply->readAll();
+        if (data.isEmpty()){
+            emit stateChanged("empty");
+            return;
+        }
+
         // qDebug() << "onApiReply" << data;
         const QJsonDocument doc = QJsonDocument::fromJson(data);
         // qDebug() << doc.toJson();
@@ -236,6 +246,7 @@ public:
 
         endResetModel();
         reply->deleteLater();
+        emit stateChanged("loaded");
     }
 
 private:
