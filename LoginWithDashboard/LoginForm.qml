@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls
 // import Components 1.0
-// import demo
+import demo 1.0
 // import demo.components
 
 Item{

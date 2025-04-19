@@ -4,6 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import demo 1.0
 import QtQuick.Effects
+import QtQuick.LocalStorage
 
 Item {
     width: 400
@@ -36,10 +37,10 @@ Item {
 
     Component {
         id: loadingIndicator
-        Rectangle {
-            anchors.fill: parent
-            Text { anchors.centerIn: parent; text: "Loading..." }
-            // color: "red"
+        LoaderOverlay {
+            textToShow: "Loading..."
+            // opacity: 0.5
+            visible: machine.state == "loading"
         }
     }
 
@@ -115,12 +116,23 @@ Item {
                     leftPadding: 20
                     // z: 100
                     model: ["All", "Credit", "Debit"]
+                    property bool filterInitialized: false
                     onCurrentIndexChanged: {
                         switch (currentIndex) {
                         case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
                         case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
                         case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
                         }
+                        console.log(currentIndex)
+                        if (filterInitialized)
+                            setSetting("filter", filterBox.currentIndex)
+                    }
+                    Component.onCompleted: {
+                        initSettings()
+                        const saved = getSetting("filter", 0)
+                        console.log(saved)
+                        filterBox.currentIndex = saved
+                        filterInitialized = true
                     }
                 }
             }
@@ -274,5 +286,35 @@ Item {
                 machine.state = "empty"
             }
         }
+    }
+
+    function getDatabase() {
+        return LocalStorage.openDatabaseSync("MyApp", "1.0", "App Settings", 100);
+    }
+
+    function initSettings() {
+        let db = getDatabase();
+        db.transaction(function(tx) {
+            tx.executeSql('CREATE TABLE IF NOT EXISTS settings(key TEXT UNIQUE, value INTEGER)');
+        });
+    }
+
+    function setSetting(key, value) {
+        console.log(key + " - " + value)
+        let db = getDatabase();
+        db.transaction(function(tx) {
+            tx.executeSql('INSERT OR REPLACE INTO settings(key, value) VALUES(?, ?)', [key, value]);
+        });
+    }
+
+    function getSetting(key, defaultValue) {
+        let db = getDatabase();
+        let result = defaultValue;
+        db.transaction(function(tx) {
+            let rs = tx.executeSql('SELECT value FROM settings WHERE key=?', [key]);
+            if (rs.rows.length > 0)
+                result = rs.rows.item(0).value;
+        });
+        return result;
     }
 }

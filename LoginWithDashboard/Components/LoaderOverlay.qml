@@ -7,6 +7,7 @@ Item {
     visible: false
     z: 1000
     opacity: visible ? 0.8 : 0.0
+    property string textToShow: "Logging in..."
 
     Rectangle {
         anchors.fill: parent
@@ -55,7 +56,7 @@ Item {
             // }
 
             Text {
-                text: "Logging in..."
+                text: textToShow
                 font.pixelSize: 20
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
