@@ -28,12 +28,13 @@ Item {
     TransactionModel {
         id: transactionModelCPP
         Component.onCompleted: {
-            transactionModelCPP.addTransaction(5, "credit", "Payment Received", 1500, "10:32 AM")
-            transactionModelCPP.addTransaction(6, "debit", "Subscription Deducted", -600, "9:20 AM")
-            transactionModelCPP.addTransaction(7, "debit", "Payment Deducted", -1500, "00:20 AM")
-            transactionModelCPP.addTransaction(8, "credit", "Payment Received", 2000, "Yesterday")
+            // transactionModelCPP.addTransaction(5, "credit", "Payment Received", 1500, "10:32 AM")
+            // transactionModelCPP.addTransaction(6, "debit", "Subscription Deducted", -600, "9:20 AM")
+            // transactionModelCPP.addTransaction(7, "debit", "Payment Deducted", -1500, "00:20 AM")
+            // transactionModelCPP.addTransaction(8, "credit", "Payment Received", 2000, "Yesterday")
             // Delay DB loading by 1.5 seconds
             loadTimer.start()
+            // transactionModelCPP.loadFromRealApi()
         }
     }
     Timer {
@@ -41,7 +42,8 @@ Item {
         interval: 5000 // 1.5 seconds
         repeat: false
         onTriggered: {
-            transactionModelCPP.loadTransactionsFromDb()
+            // transactionModelCPP.loadTransactionsFromDb()
+            transactionModelCPP.loadFromRealApi()
         }
     }
 

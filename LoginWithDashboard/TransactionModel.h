@@ -4,6 +4,12 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include "Transaction.h"
 
 class TransactionModel : public QAbstractListModel {
@@ -184,7 +190,56 @@ public:
         endResetModel();
     }
 
+    Q_INVOKABLE void loadFromRealApi() {
+        try {
+            QUrl url("http://10.130.162.175:81/transactions.json");
+            QNetworkRequest request(url);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+            QNetworkReply *reply = m_networkManager.get(request);
+            connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+                onApiReply(reply);
+            });
+        }
+        catch(...){
+            qDebug() << "fail";
+        }
+    }
+
+    void onApiReply(QNetworkReply *reply) {
+        if (reply->error() != QNetworkReply::NoError) {
+            qWarning() << "API error:" << reply->errorString();
+            reply->deleteLater();
+            return;
+        }
+
+        const QByteArray data = reply->readAll();
+        // qDebug() << "onApiReply" << data;
+        const QJsonDocument doc = QJsonDocument::fromJson(data);
+        // qDebug() << doc.toJson();
+        const QJsonArray array = doc.array();
+        // qDebug() << array ;
+        // qDebug() << array.toVariantList() ;
+
+        beginResetModel();
+        m_transactions.clear();
+
+        for (const QJsonValue &val : array) {
+            QJsonObject obj = val.toObject();
+            int id = obj["id"].toInt();
+            QString type = obj["type"].toString();
+            QString desc = obj["description"].toString();
+            double amount = obj["amount"].toDouble();
+            QString time = obj["time"].toString();
+
+            m_transactions.append(new Transaction(id, type, desc, amount, time));
+        }
+
+        endResetModel();
+        reply->deleteLater();
+    }
+
 private:
     QList<Transaction*> m_transactions;
     TransactionTypeFilter m_filter = All;
+    QNetworkAccessManager m_networkManager;
 };

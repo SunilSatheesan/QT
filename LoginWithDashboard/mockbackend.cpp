@@ -35,7 +35,7 @@ void MockBackend::fetchStats(double rand) {
     // };
     // emit statsChanged();
     // Simulate server delay
-    qDebug() << rand ;
+    // qDebug() << rand ;
     QTimer::singleShot(1000, [=]() {
         m_stats = {
                    { "users", static_cast<int>(1245 * rand) },

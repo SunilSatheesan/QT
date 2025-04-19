@@ -1,0 +1,23 @@
+[
+	{
+		"id": 1,
+		"type": "credit",
+		"description": "Freelance",
+		"amount": 4000,
+		"time": "2025-04-18 18:00"
+	},
+	{
+		"id": 2,
+		"type": "debit",
+		"description": "Snacks",
+		"amount": -150,
+		"time": "2025-04-18 21:00"
+	},
+	{
+		"id": 3,
+		"type": "debit",
+		"description": "Subscription",
+		"amount": -999,
+		"time": "2025-04-17 07:00"
+	}
+]
