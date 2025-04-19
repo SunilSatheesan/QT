@@ -47,7 +47,7 @@ Item {
                 }
 
                 ShapePath {
-                    strokeColor: spinner.headColor
+                    strokeColor: spinner.arcColor
                     strokeWidth: 4 - index // decreasing width
                     capStyle: ShapePath.RoundCap
                     fillColor: "transparent"

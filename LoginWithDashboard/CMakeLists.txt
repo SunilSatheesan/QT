@@ -4,7 +4,7 @@ project(appdemo VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick Charts )
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -30,6 +30,10 @@ qt_add_qml_module(appdemo
         QML_FILES Components/StatCard.qml
         QML_FILES Homepage.qml
         SOURCES mockbackend.h mockbackend.cpp
+        QML_FILES Components/LineChartView.qml
+        QML_FILES Components/RecentTransactions.qml
+        SOURCES transaction.h
+        SOURCES TransactionModel.h
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -45,6 +49,7 @@ set_target_properties(appdemo PROPERTIES
 
 target_link_libraries(appdemo
     PRIVATE Qt6::Quick
+    PRIVATE Qt6::Charts
 )
 
 include(GNUInstallDirs)

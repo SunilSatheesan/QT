@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include "LoginHandler.h"
 #include "mockbackend.h"
+#include "TransactionModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,9 +19,10 @@ int main(int argc, char *argv[])
 
     LoginHandler handler;
     engine.rootContext()->setContextProperty("loginHandler", &handler);
-    MockBackend backendData;
-    engine.rootContext()->setContextProperty("backendData", &backendData);
-    // qmlRegisterType<MockBackend>("demo", 1, 0, "MockBackend");
+    // MockBackend backendData;
+    // engine.rootContext()->setContextProperty("backendData", &backendData);
+    qmlRegisterType<MockBackend>("demo", 1, 0, "MockBackend");
+    qmlRegisterType<TransactionModel>("demo", 1, 0, "TransactionModel");
 
     engine.loadFromModule("demo", "Main");
 

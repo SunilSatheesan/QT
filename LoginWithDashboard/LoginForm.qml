@@ -143,7 +143,7 @@ Item{
                 toast.show("login Success", 3000)
                 root.loginInProgress = false
                 loader.visible = false
-                stackView.push("Dashboard.qml", { username: usernameField.text })
+                stackView.push("Dashboard.qml"/*, { username: usernameField.text }*/)
             }
         }
 

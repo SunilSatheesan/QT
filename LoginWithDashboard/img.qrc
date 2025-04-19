@@ -12,5 +12,7 @@
         <file>Components/StatCard.qml</file>
         <file>Homepage.qml</file>
         <file>img/home.png</file>
+        <file>Components/LineChartView.qml</file>
+        <file>Components/RecentTransactions.qml</file>
     </qresource>
 </RCC>

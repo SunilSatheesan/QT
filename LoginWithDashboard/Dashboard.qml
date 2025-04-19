@@ -133,5 +133,10 @@ Item {
             }
 
         }
+
+        // LineChartView {
+        //     // width: 400
+        //     // height: 300
+        // }
     }
 }
