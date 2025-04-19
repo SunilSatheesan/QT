@@ -47,22 +47,24 @@ Item {
             StatCard { id: alertsCard; title: "Alerts"; value: "-" }
         }
 
-        RowLayout {
-            width: parent.width
-            Item {
-                // width: parent.width/6
-            }
-
-            RecentTransactions {
-                // width: 400
-                // padding: 20
-                // height: Layout.fillHeight
-            }
-
-            Item {
-                width: Layout.fillWidth
-            }
+        RecentTransactions {
+            // width: 400
+            // padding: 20
+            // height: Layout.fillHeight
         }
+
+        // RowLayout {
+        //     width: parent.width
+        //     // Item {
+        //     //     // width: parent.width/6
+        //     // }
+
+
+
+        //     // Item {
+        //     //     width: Layout.fillWidth
+        //     // }
+        // }
     }
 
 
