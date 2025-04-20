@@ -8,6 +8,7 @@ ApplicationWindow {
     height: 300
     title: "Login UI"
     // property real baseX: (app.width - loginBox.width) / 2
+    // theme: ApplicationWindow.Dark
 
     StackView {
         id: stackView

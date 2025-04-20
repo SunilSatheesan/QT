@@ -2,8 +2,11 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import demo 1.0
+import App 1.0
 
 Item {
+    id: dashboardItem
+    property string theme: "light"
     width: 800
     height: 500
 
@@ -28,7 +31,7 @@ Item {
         // Sidebar
         Rectangle {
             width: 180
-            color: "#333"
+            color: AppSettings.theme === "dark" ? "#333" : "white"
             Layout.fillHeight: true
 
             ListView {
@@ -39,7 +42,8 @@ Item {
                     width: parent.width
                     height: 50
                     property bool hovered: false
-                    color: hovered ? "#3d566e" :  (ListView.isCurrentItem ? "#34495e" : "transparent")
+                    color: hovered ? (AppSettings.theme === "dark" ? "#3d566e" : "#f8f8f8") :
+                                     (ListView.isCurrentItem ? (AppSettings.theme === "dark" ? "#34495e" : "lightblue") : "transparent")
 
                     Row {
                         spacing: 10
@@ -56,7 +60,7 @@ Item {
 
                         Text {
                             text: name
-                            color: "white"
+                            color: AppSettings.theme === "dark" ? "white" : "black"
                             font.pixelSize: 16
                         }
                     }
@@ -88,11 +92,29 @@ Item {
                     }
                 }
             }
+
+            Row {
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Label {
+                    text: "Dark Theme"
+                    color: AppSettings.theme === "dark" ? "white" : "black"
+                    // background {
+                    //     color: "white"
+                    // }
+                }
+                Switch {
+                    checked: AppSettings.theme === "dark"
+                    onCheckedChanged: AppSettings.theme = checked ? "dark" : "light"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
 
         // Main content area
         Rectangle {
-            color: "white"
+            color: AppSettings.theme === "dark" ? "#333" : "white"
             Layout.fillWidth: true
             Layout.fillHeight: true
             radius: 4

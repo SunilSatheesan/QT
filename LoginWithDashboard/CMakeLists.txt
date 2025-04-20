@@ -9,7 +9,16 @@ find_package(Qt6 REQUIRED COMPONENTS Quick Sql)
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appdemo
-    main.cpp
+    ${SOURCES}
+)
+
+qt_add_resources(SOURCES
+    img.qrc
+)
+
+qt_add_resources(appdemo "resources"
+    PREFIX "/"
+    FILES Settings.qml
 )
 
 qt_add_qml_module(appdemo
@@ -19,10 +28,10 @@ qt_add_qml_module(appdemo
         Main.qml
         LoginForm.qml
         Dashboard.qml
-        RESOURCES img.qrc
         SOURCES LoginHandler.h
         SOURCES LoginHandler.cpp
         SOURCES LoginHandler.cpp
+        SOURCES main.cpp
         QML_FILES Components/LoaderOverlay.qml
         QML_FILES Components/CustomBusyIndicator.qml
         QML_FILES Components/Toast.qml
@@ -33,6 +42,7 @@ qt_add_qml_module(appdemo
         QML_FILES Components/RecentTransactions.qml
         SOURCES transaction.h
         SOURCES TransactionModel.h
+        QML_FILES Settings.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

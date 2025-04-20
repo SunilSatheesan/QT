@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Shapes
+import App 1.0
 
 Rectangle {
     id: card
@@ -30,6 +31,7 @@ Rectangle {
             text: card.title
             font.bold: true
             font.pixelSize: 14
+            color: AppSettings.theme === "dark" ? "white" : ""
         }
 
         Text {

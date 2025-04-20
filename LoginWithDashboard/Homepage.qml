@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import demo 1.0
 import demo.Components
+import App 1.0
 
 Item {
     width: 800
@@ -41,10 +42,10 @@ Item {
             padding: 20
             width: parent.width
 
-            StatCard { id: usersCard; title: "Users"; value: "-" }
-            StatCard { id: revenueCard; title: "Revenue"; value: "-" }
-            StatCard { id: messagesCard; title: "Messages"; value: "-" }
-            StatCard { id: alertsCard; title: "Alerts"; value: "-" }
+            StatCard { id: usersCard; title: "Users"; value: "-"; color: (AppSettings.theme === "dark" ? "#34495e" : "#e0f7fa") }
+            StatCard { id: revenueCard; title: "Revenue"; value: "-"; color: (AppSettings.theme === "dark" ? "#34495e" : "#e0f7fa") }
+            StatCard { id: messagesCard; title: "Messages"; value: "-"; color: (AppSettings.theme === "dark" ? "#34495e" : "#e0f7fa") }
+            StatCard { id: alertsCard; title: "Alerts"; value: "-"; color: (AppSettings.theme === "dark" ? "#34495e" : "#e0f7fa") }
         }
 
         RecentTransactions {

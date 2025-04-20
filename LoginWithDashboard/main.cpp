@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
+    qmlRegisterSingletonType(QUrl("qrc:/Settings.qml"), "App", 1, 0, "AppSettings");
     LoginHandler handler;
     engine.rootContext()->setContextProperty("loginHandler", &handler);
     // MockBackend backendData;

@@ -6,6 +6,7 @@ import demo 1.0
 import QtQuick.Effects
 import QtQuick.LocalStorage
 import Qt.labs.settings
+import App 1.0
 
 Item {
     width: 400
@@ -145,17 +146,22 @@ Item {
                 }
             }
 
-            ScrollView {
-                Layout.fillWidth: true
+            Flickable {
+                id: flickableArea
                 Layout.fillHeight: true
+                Layout.fillWidth: true
+                contentHeight: listView.contentHeight
+                clip: true
+
                 ListView {
+                    id: listView
                     // Layout.fillHeight: true
                     // // anchors.fill: parent
                     // Layout.fillWidth: true
                     // Layout.preferredHeight: 210  // or any fixed height
                     clip: true
-                    width: parent.width
-                    height: contentHeight
+                    width: flickableArea.width
+                    height: flickableArea.height
                     // anchors.top: parent.top
                     // anchors.left: parent.left
                     // anchors.right: parent.right
@@ -174,7 +180,8 @@ Item {
                                 id: cardContent
                                 width: parent.width
                                 height: parent.height
-                                color: swipeDelegate.hovered ? "#f8f8f8" : "white"
+                                color: swipeDelegate.hovered ? (AppSettings.theme === "dark" ? "#3d566e" : "#f8f8f8") :
+                                                               (AppSettings.theme === "dark" ? "#34495e" : "white")
                                 radius: 8
 
                                 Row {
@@ -196,7 +203,7 @@ Item {
                                         Text {
                                             text: description
                                             font.bold: true
-                                            color: "#333"
+                                            color: (AppSettings.theme === "dark" ? "#f8f8f8" : "#333")
                                         }
                                         Text {
                                             text: time
@@ -277,6 +284,10 @@ Item {
 
                     // }
                 }
+
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded  // show only when needed
+                }
             }
         }
     }
@@ -290,10 +301,19 @@ Item {
 
         function onTransactionRemoved() {
             console.log("removed...")
+            toast.show("Transaction Deleted.", 3000)
             if (transactionModelCPP.transactionCount() == 0) {
                 machine.state = "empty"
             }
         }
+    }
+
+    Toast {
+        id: toast
+        // anchors.horizontalCenter: parent.horizontalCenter
+        // anchors.verticalCenter: parent.verticalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 40
     }
 
     function getDatabase() {
