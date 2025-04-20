@@ -4,6 +4,7 @@
 #include "LoginHandler.h"
 #include "mockbackend.h"
 #include "TransactionModel.h"
+#include "AppSettingsCpp.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    qmlRegisterSingletonType(QUrl("qrc:/Settings.qml"), "App", 1, 0, "AppSettings");
+    // qmlRegisterSingletonType(QUrl("qrc:/Settings.qml"), "App", 1, 0, "AppSettings");
+    qmlRegisterSingletonInstance("App", 1, 0, "AppSettings", new AppSettings);
     LoginHandler handler;
     engine.rootContext()->setContextProperty("loginHandler", &handler);
     // MockBackend backendData;

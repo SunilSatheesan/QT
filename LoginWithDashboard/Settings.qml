@@ -8,8 +8,10 @@ QtObject {
         id: internalSettings
         category: "UI"
         property string theme: "light"
+        property int filterIndex: 0
     }
 
     // Alias to expose the setting
     property alias theme: internalSettings.theme
+    property alias filterIndex: internalSettings.filterIndex
 }

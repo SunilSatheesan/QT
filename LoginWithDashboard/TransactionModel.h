@@ -101,25 +101,25 @@ public:
     }
 
     Q_INVOKABLE void addTransaction(int id, const QString &type, const QString &desc, double amount, QString time) {
-        QSqlQuery query;
-        query.prepare("INSERT INTO transactions (id, type, description, amount, time) "
-                      "VALUES (?, ?, ?, ?, ?)");
-        query.addBindValue(id);
-        query.addBindValue(type);
-        query.addBindValue(desc);
-        query.addBindValue(amount);
-        query.addBindValue(time);
-        query.exec();
+        // QSqlQuery query;
+        // query.prepare("INSERT INTO transactions (id, type, description, amount, time) "
+        //               "VALUES (?, ?, ?, ?, ?)");
+        // query.addBindValue(id);
+        // query.addBindValue(type);
+        // query.addBindValue(desc);
+        // query.addBindValue(amount);
+        // query.addBindValue(time);
+        // query.exec();
 
-        if (!query.exec()) {
-            qWarning() << "Failed to insert: " << query.lastError().text();
-        }
+        // if (!query.exec()) {
+        //     qWarning() << "Failed to insert: " << query.lastError().text();
+        // }
 
         // loadTransactionsFromDb();
 
-        // beginInsertRows(QModelIndex(), m_transactions.size(), m_transactions.size());
-        // m_transactions.append(new Transaction(id, type, desc, amount, time));
-        // endInsertRows();
+        beginInsertRows(QModelIndex(), m_transactions.size(), m_transactions.size());
+        m_transactions.append(new Transaction(id, type, desc, amount, time));
+        endInsertRows();
     }
 
     Q_INVOKABLE void removeTransaction(int index) {

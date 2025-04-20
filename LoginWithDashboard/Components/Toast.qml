@@ -1,6 +1,7 @@
 // Toast.qml
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import App 1.0
 
 Item {
     id: toast
@@ -16,14 +17,14 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: "#323232"
+        color: AppSettings.theme === "dark" ? "white" : "#323232"
         opacity: 0.9
     }
 
     Text {
         id: toastText
         anchors.centerIn: parent
-        color: "white"
+        color: AppSettings.theme === "dark" ? "#323232" : "white"
         font.pixelSize: 16
         wrapMode: Text.WordWrap
         horizontalAlignment: Text.AlignHCenter

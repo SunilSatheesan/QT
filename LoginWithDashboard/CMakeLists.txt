@@ -19,6 +19,8 @@ qt_add_resources(SOURCES
 qt_add_resources(appdemo "resources"
     PREFIX "/"
     FILES Settings.qml
+    FILES img/home.png
+    FILES img/home_light.png
 )
 
 qt_add_qml_module(appdemo
@@ -43,6 +45,7 @@ qt_add_qml_module(appdemo
         SOURCES transaction.h
         SOURCES TransactionModel.h
         QML_FILES Settings.qml
+        SOURCES AppSettingsCpp.h
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

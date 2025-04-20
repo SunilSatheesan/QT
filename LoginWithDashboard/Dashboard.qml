@@ -19,7 +19,12 @@ Item {
     // Sidebar data
     ListModel {
         id: sidebarModel
-        ListElement { name: "Home"; icon: "home.png" }
+        ListElement {
+            name: "Home"
+            // icon: AppSettings.theme === "dark" ? "qrc:/img/home_light.png" : "qrc:/img/home.png"
+            iconLight: "qrc:/img/home.png"
+            iconDark: "qrc:/img/home_light.png"
+        }
         ListElement { name: "Profile" }
         ListElement { name: "Settings" }
         ListElement { name: "Logout" }
@@ -52,7 +57,7 @@ Item {
                         anchors.leftMargin: 12
 
                         Image {
-                            source: icon
+                            source: AppSettings.theme === "dark" ? iconDark : iconLight
                             width: 20
                             height: 20
                             fillMode: Image.PreserveAspectFit

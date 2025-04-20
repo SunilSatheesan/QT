@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import demo 1.0
 import QtQuick.Effects
 import QtQuick.LocalStorage
-import Qt.labs.settings
+// import Qt.labs.settings
 import App 1.0
 
 Item {
@@ -111,6 +111,13 @@ Item {
                 Item {
                     Layout.fillWidth: true
                 }
+                Button {
+                    text: "Add Transaction"
+                    onClicked: {
+                        transactionModelCPP.addTransaction(8, "credit", "Payment Received", 2000, "Yesterday")
+                        // Qt.callLater(() => listView.positionViewAtEnd());
+                    }
+                }
 
                 ComboBox {
                     id: filterBox
@@ -119,14 +126,14 @@ Item {
                     // z: 100
                     model: ["All", "Credit", "Debit"]
                     property bool filterInitialized: false
-                    currentIndex: settingsStorage.filterIndex
+                    currentIndex: AppSettings.filterIndex
                     onCurrentIndexChanged: {
                         switch (currentIndex) {
                         case 0: transactionModelCPP.setFilter(TransactionModel.All); break;
                         case 1: transactionModelCPP.setFilter(TransactionModel.CreditOnly); break;
                         case 2: transactionModelCPP.setFilter(TransactionModel.DebitOnly); break;
                         }
-                        settingsStorage.filterIndex = currentIndex
+                        AppSettings.filterIndex = currentIndex
                         console.log(currentIndex)
                         // if (filterInitialized)
                         //     setSetting("filter", filterBox.currentIndex)
@@ -139,156 +146,156 @@ Item {
                         // filterInitialized = true
                     }
 
-                    Settings {
-                        id: settingsStorage
-                        property int filterIndex: 0
-                    }
+                    // Settings {
+                    //     id: settingsStorage
+                    //     property int filterIndex: 0
+                    // }
                 }
             }
 
-            Flickable {
-                id: flickableArea
+            // Flickable {
+            //     id: flickableArea
+            //     Layout.fillHeight: true
+            //     Layout.fillWidth: true
+            //     contentHeight: listView.contentHeight
+            //     clip: true
+
+            ListView {
+                id: listView
                 Layout.fillHeight: true
+                // // anchors.fill: parent
                 Layout.fillWidth: true
-                contentHeight: listView.contentHeight
+                // Layout.preferredHeight: 210  // or any fixed height
                 clip: true
+                // width: flickableArea.width
+                // height: flickableArea.height
+                // anchors.top: parent.top
+                // anchors.left: parent.left
+                // anchors.right: parent.right
+                // height: parent.height
+                model: transactionModelCPP
+                delegate: SwipeDelegate {
+                    id: swipeDelegate
+                    width: parent.width
+                    height: 60
 
-                ListView {
-                    id: listView
-                    // Layout.fillHeight: true
-                    // // anchors.fill: parent
-                    // Layout.fillWidth: true
-                    // Layout.preferredHeight: 210  // or any fixed height
-                    clip: true
-                    width: flickableArea.width
-                    height: flickableArea.height
-                    // anchors.top: parent.top
-                    // anchors.left: parent.left
-                    // anchors.right: parent.right
-                    // height: parent.height
-                    model: transactionModelCPP
-                    delegate: SwipeDelegate {
-                        id: swipeDelegate
+                    background: Item {
                         width: parent.width
-                        height: 60
+                        height: parent.height
 
-                        background: Item {
+                        Rectangle {
+                            id: cardContent
                             width: parent.width
                             height: parent.height
+                            color: swipeDelegate.hovered ? (AppSettings.theme === "dark" ? "#3d566e" : "#f8f8f8") :
+                                                           (AppSettings.theme === "dark" ? "#34495e" : "white")
+                            radius: 8
 
-                            Rectangle {
-                                id: cardContent
-                                width: parent.width
-                                height: parent.height
-                                color: swipeDelegate.hovered ? (AppSettings.theme === "dark" ? "#3d566e" : "#f8f8f8") :
-                                                               (AppSettings.theme === "dark" ? "#34495e" : "white")
-                                radius: 8
+                            Row {
+                                spacing: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: 20
 
-                                Row {
-                                    spacing: 10
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 20
-
-                                    Rectangle {
-                                        width: 8
-                                        height: 40
-                                        radius: 4
-                                        color: type === "credit" ? "green" : "red"
-                                    }
-
-                                    Column {
-                                        width: 200
-                                        spacing: 2
-                                        Text {
-                                            text: description
-                                            font.bold: true
-                                            color: (AppSettings.theme === "dark" ? "#f8f8f8" : "#333")
-                                        }
-                                        Text {
-                                            text: time
-                                            font.pixelSize: 12
-                                            color: "#777"
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text: (amount >= 0 ? "+" : "") + amount + " ₹"
-                                        color: amount >= 0 ? "green" : "red"
-                                        font.bold: true
-                                    }
+                                Rectangle {
+                                    width: 8
+                                    height: 40
+                                    radius: 4
+                                    color: type === "credit" ? "green" : "red"
                                 }
 
-                                // MouseArea {
-                                //     anchors.fill: parent
-                                //     hoverEnabled: true
-                                //     onEntered: swipeDelegate.hovered = true
-                                //     onExited: swipeDelegate.hovered = false
-                                // }
-                            }
-                            MultiEffect {
-                                anchors.fill: cardContent
-                                source: cardContent
-                                shadowEnabled: true
-                                shadowColor: "#33000000"
-                                shadowBlur: 0.6
-                                shadowHorizontalOffset: 0
-                                shadowVerticalOffset: 2
-                            }
-                        }
-
-                        swipe.right: Item {
-                            width: 100
-                            height: 50
-                            anchors.right: parent.right
-
-                            Rectangle {
-                                anchors.fill: parent
-                                color: "red"
-                                radius: 8
+                                Column {
+                                    width: 200
+                                    spacing: 2
+                                    Text {
+                                        text: description
+                                        font.bold: true
+                                        color: (AppSettings.theme === "dark" ? "#f8f8f8" : "#333")
+                                    }
+                                    Text {
+                                        text: time
+                                        font.pixelSize: 12
+                                        color: "#777"
+                                    }
+                                }
 
                                 Text {
-                                    anchors.centerIn: parent
-                                    color: "white"
-                                    text: "Delete"
-                                }
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        deleteAnim.start()
-                                    }
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: (amount >= 0 ? "+" : "") + amount + " ₹"
+                                    color: amount >= 0 ? "green" : "red"
+                                    font.bold: true
                                 }
                             }
-                        }
 
-                        SequentialAnimation {
-                            id: deleteAnim
-                            PropertyAnimation { target: swipeDelegate; property: "opacity"; to: 0; duration: 200 }
-                            PropertyAnimation { target: swipeDelegate; property: "height"; to: 0; duration: 200 }
-                            ScriptAction {
-                                script: {
-                                    transactionModelCPP.removeTransaction(index)
-                                    swipeDelegate.opacity = 1
-                                    swipeDelegate.height = contentItem.implicitHeight
+                            // MouseArea {
+                            //     anchors.fill: parent
+                            //     hoverEnabled: true
+                            //     onEntered: swipeDelegate.hovered = true
+                            //     onExited: swipeDelegate.hovered = false
+                            // }
+                        }
+                        MultiEffect {
+                            anchors.fill: cardContent
+                            source: cardContent
+                            shadowEnabled: true
+                            shadowColor: "#33000000"
+                            shadowBlur: 0.6
+                            shadowHorizontalOffset: 0
+                            shadowVerticalOffset: 2
+                        }
+                    }
+
+                    swipe.right: Item {
+                        width: 100
+                        height: 50
+                        anchors.right: parent.right
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "red"
+                            radius: 8
+
+                            Text {
+                                anchors.centerIn: parent
+                                color: "white"
+                                text: "Delete"
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    deleteAnim.start()
                                 }
                             }
                         }
                     }
-                    // delegate: Rectangle {
-                    //     width: parent.width
-                    //     height: 60
-                    //     color: "transparent"
 
-
-                    // }
+                    SequentialAnimation {
+                        id: deleteAnim
+                        PropertyAnimation { target: swipeDelegate; property: "opacity"; to: 0; duration: 200 }
+                        PropertyAnimation { target: swipeDelegate; property: "height"; to: 0; duration: 200 }
+                        ScriptAction {
+                            script: {
+                                transactionModelCPP.removeTransaction(index)
+                                swipeDelegate.opacity = 1
+                                swipeDelegate.height = contentItem.implicitHeight
+                            }
+                        }
+                    }
                 }
+                // delegate: Rectangle {
+                //     width: parent.width
+                //     height: 60
+                //     color: "transparent"
 
                 ScrollBar.vertical: ScrollBar {
                     policy: ScrollBar.AsNeeded  // show only when needed
                 }
+                // }
             }
+
+
+            // }
         }
     }
 
