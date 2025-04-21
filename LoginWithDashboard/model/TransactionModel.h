@@ -50,25 +50,7 @@ public:
 
     }
 
-    // int rowCount(const QModelIndex &parent = QModelIndex()) const override {
-    //     Q_UNUSED(parent)
-    //     return m_transactions.size();
-    // }
-
-    // QVariant data(const QModelIndex &index, int role) const override {
-    //     if (!index.isValid()) return {};
-
-    //     const Transaction *t = m_transactions.at(index.row());
-    //     switch (role) {
-    //     case TypeRole: return t->type();
-    //     case DescriptionRole: return t->description();
-    //     case AmountRole: return t->amount();
-    //     case TimeRole: return t->time();
-    //     default: return {};
-    //     }
-    // }
-
-    int rowCount(const QModelIndex &parent) const override
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override
     {
         Q_UNUSED(parent);
         return filteredTransactions().size();
@@ -249,6 +231,13 @@ public:
         emit stateChanged("loaded");
     }
 
+    void clearTransactions() {
+        beginResetModel();
+        qDeleteAll(m_transactions);
+        m_transactions.clear();
+        endResetModel();
+        emit transactionRemoved();
+    }
 private:
     QList<Transaction*> m_transactions;
     TransactionTypeFilter m_filter = All;

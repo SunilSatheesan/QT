@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QIcon>
 #include "LoginHandler.h"
 #include "mockbackend.h"
 #include "TransactionModel.h"
@@ -11,6 +12,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("Demo");
     QCoreApplication::setApplicationName("appDemo");
     QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon("qrc:/img/favicon.ico"));
 
     QQmlApplicationEngine engine;
     QObject::connect(

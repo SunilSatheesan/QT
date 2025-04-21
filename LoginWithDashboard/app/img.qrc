@@ -2,6 +2,7 @@
     <qresource prefix="/img">
         <file>img/pp.png</file>
         <file>img/home.png</file>
+        <file>img/favicon.ico</file>
     </qresource>
     <qresource prefix="/">
         <file>img/pp.bmp</file>
