@@ -14,11 +14,11 @@ public:
     Transaction(int id, QString type, QString description, double amount, QString time)
         : m_id(id), m_type(std::move(type)), m_description(std::move(description)), m_time(std::move(time)), m_amount(amount) {}
 
-    int id() const { return m_id; }
-    QString type() const { return m_type; }
-    QString description() const { return m_description; }
-    QString time() const { return m_time; }
-    double amount() const { return m_amount; }
+    int id() const ;
+    QString type() const ;
+    QString description() const ;
+    QString time() const ;
+    double amount() const ;
 
 private:
     int m_id;

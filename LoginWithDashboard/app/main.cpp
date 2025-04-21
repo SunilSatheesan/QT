@@ -4,7 +4,7 @@
 #include <QIcon>
 #include "LoginHandler.h"
 #include "mockbackend.h"
-#include "TransactionModel.h"
+#include "../model/TransactionModel.h"
 #include "AppSettingsCpp.h"
 
 int main(int argc, char *argv[])
